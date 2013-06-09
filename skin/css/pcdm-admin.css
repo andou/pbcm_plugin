@@ -1,0 +1,17 @@
+/* 
+    Document   : pcdm-admin
+    Created on : 9-giu-2013, 12.35.02
+    Author     : andou
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+#pcdm_pb_fieldset_3.sngl_prod_tpl_selector tbody > tr{
+    display: none;
+}
+
+#pcdm_pb_fieldset_3.sngl_prod_tpl_selector tbody tr:first-child
+{ 
+    display: block;
+}

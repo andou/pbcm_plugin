@@ -18,7 +18,7 @@ class PcdmProductBucket {
         //definizione del tipo di dato
         add_action('init', array(&$this, 'defineType'));
         //definizione dei box aggiuntivi
-        add_action('cmb_meta_boxes', array(&$this, 'defineFields'));
+        add_filter('cmb_meta_boxes', array(&$this, 'defineFields'));
         //definizione dei nuovi parametri in griglia
         add_filter(sprintf("manage_%s_posts_columns", self::TYPE_IDENTIFIER), array(&$this, 'changeColumns'));
         add_action("manage_posts_custom_column", array(&$this, "fillColumns"), 10, 2);
@@ -54,20 +54,25 @@ class PcdmProductBucket {
             'capability_type' => 'post',
             'hierarchical' => false, //non presenta gerarchia
             'menu_position' => null,
-            'supports' => array('title', 'editor', 'thumbnail')
+            'supports' => array('title')
         );
 
         register_post_type(self::TYPE_IDENTIFIER, $args);
     }
 
-    public function defineFields() {
+    public function defineFields($meta_boxes) {
+
+        $product_selector = array();
+        $product_selector[] = array('name' => 'Vuoto', 'value' => -1);
+        $product_selector = array_merge($product_selector, PcdmProduct::getProductsForSelection());
+
         $meta_boxes[] = array(
-            'id' => 'fieldset_1',
+            'id' => self::TYPE_PREFIX .'fieldset_1',
             'title' => 'Appearance',
             'pages' => array(self::TYPE_IDENTIFIER),
             'context' => 'normal',
             'priority' => 'low',
-            'show_names' => true, // Show field names on the left
+            'show_names' => true,
             'fields' => array(
                 array(
                     'name' => 'Color',
@@ -75,18 +80,67 @@ class PcdmProductBucket {
                     'id' => self::TYPE_PREFIX . 'collection_color',
                     'type' => 'colorpicker'
                 ),
+            ),
+        );
+
+        $meta_boxes[] = array(
+            'id' => self::TYPE_PREFIX .'fieldset_2',
+            'title' => 'Template',
+            'pages' => array(self::TYPE_IDENTIFIER),
+            'context' => 'normal',
+            'priority' => 'low',
+            'show_names' => false,
+            'fields' => array(
                 array(
                     'name' => 'Template',
                     'desc' => 'Single product or up to 4 products',
                     'id' => self::TYPE_PREFIX . 'collection_template',
-                    'type' => 'radio',
+                    'type' => 'radio_inline',
                     'options' => array(
                         array('name' => 'Single Product', 'value' => self::TPL_SINGLE),
                         array('name' => 'Multiple Product', 'value' => self::TPL_MULTIPLE),
                     )
                 ),
-            ),
+            )
         );
+
+
+
+        $meta_boxes[] = array(
+            'id' => self::TYPE_PREFIX .'fieldset_3',
+            'title' => 'Products',
+            'pages' => array(self::TYPE_IDENTIFIER),
+            'context' => 'normal',
+            'priority' => 'low',
+            'show_names' => false,
+            'fields' => array(
+                array(
+                    'name' => 'Product A',
+                    'id' => self::TYPE_PREFIX . 'prod_a',
+                    'type' => 'select',
+                    'options' => $product_selector
+                ),
+                array(
+                    'name' => 'Product B',
+                    'id' => self::TYPE_PREFIX . 'prod_b',
+                    'type' => 'select',
+                    'options' => $product_selector
+                ),
+                array(
+                    'name' => 'Product C',
+                    'id' => self::TYPE_PREFIX . 'prod_c',
+                    'type' => 'select',
+                    'options' => $product_selector
+                ),
+                array(
+                    'name' => 'Product D',
+                    'id' => self::TYPE_PREFIX . 'prod_d',
+                    'type' => 'select',
+                    'options' => $product_selector
+                ),
+            )
+        );
+
 
         return $meta_boxes;
     }

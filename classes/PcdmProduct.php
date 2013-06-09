@@ -14,8 +14,8 @@ class PcdmProduct {
 
     public function __construct() {
         add_action('init', array(&$this, 'defineType'));
-        add_action('add_meta_boxes', array(&$this, 'defineFields'));
-        add_action('save_post', array(&$this, 'save'));
+        add_action('before_delete_post', array(&$this, 'delete'));
+        add_filter('cmb_meta_boxes', array(&$this, 'defineFields'));
     }
 
     /**
@@ -47,39 +47,69 @@ class PcdmProduct {
             'capability_type' => 'post',
             'hierarchical' => false, //non presenta gerarchia
             'menu_position' => null,
-            'supports' => array('title', 'editor', 'thumbnail')
+            'supports' => array('title','thumbnail')
         );
 
         register_post_type(self::TYPE_IDENTIFIER, $args);
     }
 
-    public function defineFields() {
-//        add_meta_box('creation-year-id', 'Creation Year', array(&$this, 'defineCreationYear'), self::TYPE_IDENTIFIER, 'side', 'low');
+    public static function getProductsForSelection($orderBy = 'title', $orderIn = 'ASC') {
+
+        $products = array();
+
+        $args = array(
+            'post_type' => self::TYPE_IDENTIFIER,
+            'post_status' => 'publish',
+            'orderby' => $orderBy,
+            'order' => $orderIn,
+        );
+
+        foreach (get_posts($args) as $product) {
+            $products[] = array(
+                'name' => $product->post_title,
+                'value' => $product->ID
+            );
+        }
+
+
+        return $products;
     }
 
+    public function defineFields($meta_boxes) {
+        $meta_boxes[] = array(
+            'id' => self::TYPE_PREFIX . 'fieldset_1',
+            'title' => 'Description',
+            'pages' => array(self::TYPE_IDENTIFIER),
+            'context' => 'normal',
+            'priority' => 'low',
+            'show_names' => true,
+            'fields' => array(
+                array(
+                    'name' => 'Description',
+                    'desc' => 'Insert a description for this product',
+                    'id' => self::TYPE_PREFIX . 'description',
+                    'type' => 'textarea_small'
+                ),
+            ),
+        );
 
+        return $meta_boxes;
+    }
 
-    public function save($product_id) {
-//        // Bail if we're doing an auto save  
-//        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
-//            return;
-//
-//        // if our current user can't edit this post, bail  
-//        if (!current_user_can('edit_post'))
-//            return;
-//
-//        global $post;
-//        $post_id = $post->ID;
-//
-//        // now we can actually save the data  
-//        $allowed = array(
-//            'a' => array(// on allow a tags  
-//                'href' => array() // and those anchors can only have href attribute  
-//            )
-//        );
-//
-//        if (isset($_POST['creation_year']))
-//            update_post_meta($post_id, 'creation_year', wp_kses($_POST['creation_year'], $allowed));
+    public function delete($postid) {
+        global $post_type;
+        if ($post_type != self::TYPE_IDENTIFIER)
+            return;
+
+        $args = array(
+            'post_type' => PcdmProductBucket::TYPE_IDENTIFIER
+        );
+        foreach (get_post($args) as $postinfo) {
+            delete_post_meta($postinfo->ID, PcdmProductBucket::TYPE_PREFIX . 'prod_a', $postid);
+            delete_post_meta($postinfo->ID, PcdmProductBucket::TYPE_PREFIX . 'prod_b', $postid);
+            delete_post_meta($postinfo->ID, PcdmProductBucket::TYPE_PREFIX . 'prod_c', $postid);
+            delete_post_meta($postinfo->ID, PcdmProductBucket::TYPE_PREFIX . 'prod_d', $postid);
+        }
     }
 
 }
