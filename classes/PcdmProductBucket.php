@@ -10,7 +10,20 @@ class PcdmProductBucket {
     /**
      * Definisce il prefisso per i capi per questo tipo di dato
      */
-    const TYPE_PREFIX = 'pcdm_pb';
+    const TYPE_PREFIX = 'pcdm_pb_';
+    const TPL_SINGLE = 'sngl_prod_tpl';
+    const TPL_MULTIPLE = 'mult_prod_tpl';
+
+    public function __construct() {
+        //definizione del tipo di dato
+        add_action('init', array(&$this, 'defineType'));
+        //definizione dei box aggiuntivi
+        add_action('cmb_meta_boxes', array(&$this, 'defineFields'));
+        //definizione dei nuovi parametri in griglia
+        add_filter(sprintf("manage_%s_posts_columns", self::TYPE_IDENTIFIER), array(&$this, 'changeColumns'));
+        add_action("manage_posts_custom_column", array(&$this, "fillColumns"), 10, 2);
+        add_action('save_post', array(&$this, 'save'));
+    }
 
     /**
      * Definisce il tipo di dato Prodotto da console di amministrazione         
@@ -58,7 +71,7 @@ class PcdmProductBucket {
             'fields' => array(
                 array(
                     'name' => 'Color',
-                    'desc' => 'Pick a color for the hover selection',
+                    'desc' => 'Pick a color for the hover',
                     'id' => self::TYPE_PREFIX . 'collection_color',
                     'type' => 'colorpicker'
                 ),
@@ -68,14 +81,36 @@ class PcdmProductBucket {
                     'id' => self::TYPE_PREFIX . 'collection_template',
                     'type' => 'radio',
                     'options' => array(
-                        array('name' => 'Single Product', 'value' => 'sngl_prod_tpl'),
-                        array('name' => 'Multiple Product', 'value' => 'mult_prod_tpl'),
+                        array('name' => 'Single Product', 'value' => self::TPL_SINGLE),
+                        array('name' => 'Multiple Product', 'value' => self::TPL_MULTIPLE),
                     )
                 ),
             ),
         );
 
         return $meta_boxes;
+    }
+
+    public function changeColumns($cols) {
+
+        $new_cols = array(
+            self::TYPE_PREFIX . 'collection_color' => __('Hover Color', 'trans'),
+            self::TYPE_PREFIX . 'collection_template' => __('Template', 'trans'),
+        );
+        return array_merge($cols, $new_cols);
+    }
+
+    function fillColumns($column, $post_id) {
+        switch ($column) {
+            case self::TYPE_PREFIX . 'collection_color':
+                $color = get_post_meta($post_id, self::TYPE_PREFIX . 'collection_color', true);
+                echo sprintf("<span style=\"color:%s;font-weight:bold;\">%s</span>", $color, $color);
+                break;
+            case self::TYPE_PREFIX . 'collection_template':
+                $template = get_post_meta($post_id, self::TYPE_PREFIX . 'collection_template', true);
+                echo ($template == self::TPL_MULTIPLE) ? 'Multiple Product' : 'Single Product';
+                break;
+        }
     }
 
     public function save($_id) {

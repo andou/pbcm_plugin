@@ -4,12 +4,19 @@ class PcdmProduct {
     /**
      * Definisce il nome del tipo di dato che utilizziamo
      */
+
     const TYPE_IDENTIFIER = 'pcdm_products';
-    
+
     /**
      * Definisce il prefisso per i capi per questo tipo di dato
      */
-    const TYPE_PREFIX = 'pcdm_pr';
+    const TYPE_PREFIX = 'pcdm_pr_';
+
+    public function __construct() {
+        add_action('init', array(&$this, 'defineType'));
+        add_action('add_meta_boxes', array(&$this, 'defineFields'));
+        add_action('save_post', array(&$this, 'save'));
+    }
 
     /**
      * Definisce il tipo di dato Prodotto da console di amministrazione         

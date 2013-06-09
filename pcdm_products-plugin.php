@@ -23,13 +23,7 @@ if (!class_exists("PcdmProduct")) {
 }
 
 if (class_exists("PcdmProduct")) {
-    $pcdmProduct = new PcdmProduct();
-}
-
-if (isset($pcdmProduct)) {
-    add_action('init', array(&$pcdmProduct, 'defineType'));
-    add_action('add_meta_boxes', array(&$pcdmProduct, 'defineFields'));
-    add_action('save_post', array(&$pcdmProduct, 'save'));
+    new PcdmProduct();
 }
 
 
@@ -43,15 +37,8 @@ if (!class_exists("PcdmProductBucket")) {
 }
 
 if (class_exists("PcdmProductBucket")) {
-    $pcdmProductBucket = new PcdmProductBucket();
+    new PcdmProductBucket();
 }
-
-if (isset($pcdmProductBucket)) {
-    add_action('init', array(&$pcdmProductBucket, 'defineType'));
-    add_action('cmb_meta_boxes', array(&$pcdmProductBucket, 'defineFields'));
-    add_action('save_post', array(&$pcdmProductBucket, 'save'));
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////  OTHER  ///////////////////////////////////////////
