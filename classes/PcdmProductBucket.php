@@ -67,23 +67,6 @@ class PcdmProductBucket {
         $product_selector = array_merge($product_selector, PcdmProduct::getProductsForSelection());
 
         $meta_boxes[] = array(
-            'id' => self::TYPE_PREFIX .'fieldset_1',
-            'title' => 'Appearance',
-            'pages' => array(self::TYPE_IDENTIFIER),
-            'context' => 'normal',
-            'priority' => 'low',
-            'show_names' => true,
-            'fields' => array(
-                array(
-                    'name' => 'Color',
-                    'desc' => 'Pick a color for the hover',
-                    'id' => self::TYPE_PREFIX . 'collection_color',
-                    'type' => 'colorpicker'
-                ),
-            ),
-        );
-
-        $meta_boxes[] = array(
             'id' => self::TYPE_PREFIX .'fieldset_2',
             'title' => 'Template',
             'pages' => array(self::TYPE_IDENTIFIER),
@@ -148,7 +131,6 @@ class PcdmProductBucket {
     public function changeColumns($cols) {
 
         $new_cols = array(
-            self::TYPE_PREFIX . 'collection_color' => __('Hover Color', 'trans'),
             self::TYPE_PREFIX . 'collection_template' => __('Template', 'trans'),
         );
         return array_merge($cols, $new_cols);
@@ -156,10 +138,6 @@ class PcdmProductBucket {
 
     function fillColumns($column, $post_id) {
         switch ($column) {
-            case self::TYPE_PREFIX . 'collection_color':
-                $color = get_post_meta($post_id, self::TYPE_PREFIX . 'collection_color', true);
-                echo sprintf("<span style=\"color:%s;font-weight:bold;\">%s</span>", $color, $color);
-                break;
             case self::TYPE_PREFIX . 'collection_template':
                 $template = get_post_meta($post_id, self::TYPE_PREFIX . 'collection_template', true);
                 echo ($template == self::TPL_MULTIPLE) ? 'Multiple Product' : 'Single Product';
