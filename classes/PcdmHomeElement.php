@@ -18,8 +18,8 @@ class PcdmHomeElement {
         add_action('init', array(&$this, 'defineType'));
         add_filter('cmb_meta_boxes', array(&$this, 'defineFields'));
         //definizione dei nuovi parametri in griglia
-//        add_filter(sprintf("manage_%s_posts_columns", self::TYPE_IDENTIFIER), array(&$this, 'changeColumns'));
-//        add_action("manage_posts_custom_column", array(&$this, "fillColumns"), 10, 2);
+        add_filter(sprintf("manage_%s_posts_columns", self::TYPE_IDENTIFIER), array(&$this, 'changeColumns'));
+        add_action("manage_posts_custom_column", array(&$this, "fillColumns"), 10, 2);
     }
 
     /**
@@ -97,8 +97,8 @@ class PcdmHomeElement {
                 array(
                     'name' => 'Number',
                     'desc' => 'Define the number of this element',
-                    'id' => self::TYPE_PREFIX  . 'hp_number',
-                    'type' => 'text_small'
+                    'id' => self::TYPE_PREFIX . 'hp_number',
+                    'type' => 'text_numericint'
                 ),
                 array(
                     'name' => 'Description',
@@ -120,13 +120,50 @@ class PcdmHomeElement {
                 array(
                     'name' => 'Link',
                     'desc' => 'User defined link',
-                    'id' => self::TYPE_PREFIX  . 'hp_link',
+                    'id' => self::TYPE_PREFIX . 'hp_link',
                     'type' => 'text_medium'
                 ),
             ),
         );
 
         return $meta_boxes;
+    }
+
+    public function changeColumns($cols) {
+
+        $new_cols = array(
+            self::TYPE_PREFIX . 'hp_template' => __('Template', 'trans'),
+            self::TYPE_PREFIX . 'void_after' => __('Space', 'trans'),
+            self::TYPE_PREFIX . 'hp_number' => __('Number', 'trans'),
+        );
+        return array_merge($cols, $new_cols);
+    }
+
+    function fillColumns($column, $post_id) {
+        switch ($column) {
+            case self::TYPE_PREFIX . 'hp_template':
+                $template = get_post_meta($post_id, self::TYPE_PREFIX . 'hp_template', true);
+                switch($template){
+                    case self::TPL_LARGE:
+                        echo 'large';
+                        break;
+                    case self::TPL_MEDIUM:
+                        echo 'medium';
+                        break;
+                    case self::TPL_SMALL:
+                        echo 'small';
+                        break;
+                }
+                break;
+            case self::TYPE_PREFIX . 'void_after':
+                $template = get_post_meta($post_id, self::TYPE_PREFIX . 'void_after', true);
+                echo $template == 'on' ? 'space' : 'no space';
+                break;
+            case self::TYPE_PREFIX . 'hp_number':
+                $template = get_post_meta($post_id, self::TYPE_PREFIX . 'hp_number', true);
+                echo isset($template) && $template !='' ? $template : 'not set';
+                break;
+        }
     }
 
 //    public function changeColumns($cols) {

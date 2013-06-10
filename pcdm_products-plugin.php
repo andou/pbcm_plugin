@@ -101,6 +101,21 @@ function be_initialize_cmb_meta_boxes() {
     }
 }
 
+/////////////////METABOX DEFINITION  ///////////////////////////////////////////
+
+//numeric
+add_action( 'cmb_render_text_numericint', 'rrh_cmb_render_text_numericint', 10, 2 );
+function rrh_cmb_render_text_numericint( $field, $meta ) {
+    echo '<input type="text" name="', $field['id'], '" id="', $field['id'], '" value="', $meta ? $meta : $field['std'], '" style="width:97%" />','<p class="cmb_metabox_description">', $field['desc'], '</p>';
+}
+
+add_filter( 'cmb_validate_text_numericint', 'rrh_cmb_validate_text_numericint' );
+function rrh_cmb_validate_text_numericint( $new ) {
+    return (int) $new;
+}
+
+
+//stili e js per la console di admin
 add_action('admin_menu', 'pcdm_scripts_admin_styles');
 
 function pcdm_scripts_admin_styles() {
