@@ -12,13 +12,35 @@ class PcdmProduct {
      */
     const TYPE_PREFIX = 'pcdm_pr_';
 
+    protected $do_not_translate;
+
     public function __construct() {
+        $this->do_not_translate = array(
+            'description'
+        );
         add_action('init', array(&$this, 'defineType'));
         add_action('before_delete_post', array(&$this, 'delete'));
         add_filter('cmb_meta_boxes', array(&$this, 'defineFields'));
         //definizione dei nuovi parametri in griglia
         add_filter(sprintf("manage_%s_posts_columns", self::TYPE_IDENTIFIER), array(&$this, 'changeColumns'));
+        add_filter('pll_copy_post_metas', array(&$this, 'avoidTranslation'));
         add_action("manage_posts_custom_column", array(&$this, "fillColumns"), 10, 2);
+    }
+
+    /**
+     * Per evitare la sincronizzazione di alcuni campi
+     * 
+     * @param type $metas
+     * @return type
+     */
+    public function avoidTranslation($metas) {
+        foreach ($this->do_not_translate as $key) {
+            $key = array_search(self::TYPE_PREFIX . $key, $metas);
+            if ($key) {
+                unset($metas[$key]);
+            }
+        }
+        return $metas;
     }
 
     /**
@@ -56,6 +78,14 @@ class PcdmProduct {
         register_post_type(self::TYPE_IDENTIFIER, $args);
     }
 
+    /**
+     * Restituisce un array di prodotti da visualizzarsi nel selettore dei
+     * prodotti 
+     * 
+     * @param string $orderBy
+     * @param string $orderIn
+     * @return array
+     */
     public static function getProductsForSelection($orderBy = 'title', $orderIn = 'ASC') {
 
         $products = array();
@@ -78,6 +108,12 @@ class PcdmProduct {
         return $products;
     }
 
+    /**
+     * Definisce i campi per questo TDD da mostrarsi a console di admin
+     * 
+     * @param type $meta_boxes
+     * @return boolean
+     */
     public function defineFields($meta_boxes) {
         $meta_boxes[] = array(
             'id' => self::TYPE_PREFIX . 'fieldset_1',
@@ -116,6 +152,12 @@ class PcdmProduct {
         return $meta_boxes;
     }
 
+    /**
+     * Definisce la grid di questo TDD
+     * 
+     * @param type $cols
+     * @return type
+     */
     public function changeColumns($cols) {
 
         $new_cols = array(
@@ -124,6 +166,12 @@ class PcdmProduct {
         return array_merge($cols, $new_cols);
     }
 
+    /**
+     * Definisce come riempire la grid di questo TDD
+     * 
+     * @param type $column
+     * @param type $post_id
+     */
     function fillColumns($column, $post_id) {
         switch ($column) {
             case self::TYPE_PREFIX . 'collection_color':
@@ -133,6 +181,13 @@ class PcdmProduct {
         }
     }
 
+    /**
+     * Hook/observer per la cancellazione di un oggetto
+     * 
+     * @global type $post_type
+     * @param type $postid
+     * @return type
+     */
     public function delete($postid) {
         global $post_type;
         if ($post_type != self::TYPE_IDENTIFIER)

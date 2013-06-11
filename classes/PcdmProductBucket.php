@@ -14,15 +14,41 @@ class PcdmProductBucket {
     const TPL_SINGLE = 'sngl_prod_tpl';
     const TPL_MULTIPLE = 'mult_prod_tpl';
 
+    protected $do_not_translate;
+
     public function __construct() {
+
+        $this->do_not_translate = array(
+            'prod_a',
+            'prod_b',
+            'prod_c',
+            'prod_d',
+        );
         //definizione del tipo di dato
         add_action('init', array(&$this, 'defineType'));
         //definizione dei box aggiuntivi
         add_filter('cmb_meta_boxes', array(&$this, 'defineFields'));
+        add_filter('pll_copy_post_metas', array(&$this, 'avoidTranslation'));
         //definizione dei nuovi parametri in griglia
         add_filter(sprintf("manage_%s_posts_columns", self::TYPE_IDENTIFIER), array(&$this, 'changeColumns'));
         add_action("manage_posts_custom_column", array(&$this, "fillColumns"), 10, 2);
         add_action('save_post', array(&$this, 'save'));
+    }
+
+    /**
+     * Per evitare la sincronizzazione di alcuni campi
+     * 
+     * @param type $metas
+     * @return type
+     */
+    public function avoidTranslation($metas) {
+        foreach ($this->do_not_translate as $key) {
+            $key = array_search(self::TYPE_PREFIX . $key, $metas);
+            if ($key) {
+                unset($metas[$key]);
+            }
+        }
+        return $metas;
     }
 
     /**
@@ -67,7 +93,7 @@ class PcdmProductBucket {
         $product_selector = array_merge($product_selector, PcdmProduct::getProductsForSelection());
 
         $meta_boxes[] = array(
-            'id' => self::TYPE_PREFIX .'fieldset_2',
+            'id' => self::TYPE_PREFIX . 'fieldset_2',
             'title' => 'Template',
             'pages' => array(self::TYPE_IDENTIFIER),
             'context' => 'normal',
@@ -90,7 +116,7 @@ class PcdmProductBucket {
 
 
         $meta_boxes[] = array(
-            'id' => self::TYPE_PREFIX .'fieldset_3',
+            'id' => self::TYPE_PREFIX . 'fieldset_3',
             'title' => 'Products',
             'pages' => array(self::TYPE_IDENTIFIER),
             'context' => 'normal',

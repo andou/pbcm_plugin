@@ -14,12 +14,35 @@ class PcdmHomeElement {
      */
     const TYPE_PREFIX = 'pcdm_hp_';
 
+    protected $do_not_translate;
+
     public function __construct() {
+        $this->do_not_translate = array(
+            'description',
+            'hp_link'
+        );
         add_action('init', array(&$this, 'defineType'));
         add_filter('cmb_meta_boxes', array(&$this, 'defineFields'));
+        add_filter('pll_copy_post_metas', array(&$this, 'avoidTranslation'));
         //definizione dei nuovi parametri in griglia
         add_filter(sprintf("manage_%s_posts_columns", self::TYPE_IDENTIFIER), array(&$this, 'changeColumns'));
         add_action("manage_posts_custom_column", array(&$this, "fillColumns"), 10, 2);
+    }
+
+    /**
+     * Per evitare la sincronizzazione di alcuni campi
+     * 
+     * @param type $metas
+     * @return type
+     */
+    public function avoidTranslation($metas) {
+        foreach ($this->do_not_translate as $key) {
+            $key = array_search(self::TYPE_PREFIX . $key, $metas);
+            if ($key) {
+                unset($metas[$key]);
+            }
+        }
+        return $metas;
     }
 
     /**
@@ -30,7 +53,7 @@ class PcdmHomeElement {
         $labels = array(
             'name' => _x('HP Elements', 'post type general name'),
             'singular_name' => _x('HP Element', 'post type singular name'),
-            'add_new' => _x('Add New', 'portfolio item'),
+            'add_new' => _x('Add New', 'home item'),
             'add_new_item' => __('Add New HP Item'),
             'edit_item' => __('Edit HP Item'),
             'new_item' => __('New HP Item'),
@@ -143,7 +166,7 @@ class PcdmHomeElement {
         switch ($column) {
             case self::TYPE_PREFIX . 'hp_template':
                 $template = get_post_meta($post_id, self::TYPE_PREFIX . 'hp_template', true);
-                switch($template){
+                switch ($template) {
                     case self::TPL_LARGE:
                         echo 'large';
                         break;
@@ -161,25 +184,9 @@ class PcdmHomeElement {
                 break;
             case self::TYPE_PREFIX . 'hp_number':
                 $template = get_post_meta($post_id, self::TYPE_PREFIX . 'hp_number', true);
-                echo isset($template) && $template !='' ? $template : 'not set';
+                echo isset($template) && $template != '' ? $template : 'not set';
                 break;
         }
     }
 
-//    public function changeColumns($cols) {
-//
-//        $new_cols = array(
-//            self::TYPE_PREFIX . 'collection_color' => __('Hover Color', 'trans'),
-//        );
-//        return array_merge($cols, $new_cols);
-//    }
-//
-//    function fillColumns($column, $post_id) {
-//        switch ($column) {
-//            case self::TYPE_PREFIX . 'collection_color':
-//                $color = get_post_meta($post_id, self::TYPE_PREFIX . 'collection_color', true);
-//                echo sprintf("<span style=\"color:%s;font-weight:bold;\">%s</span>", $color, $color);
-//                break;
-//        }
-//    }
 }
