@@ -95,9 +95,9 @@ class PcdmHomeElement {
                     'id' => self::TYPE_PREFIX . 'hp_template',
                     'type' => 'radio_inline',
                     'options' => array(
-                        array('name' => 'Small', 'value' => self::TPL_LARGE),
+                        array('name' => 'Large', 'value' => self::TPL_LARGE),
                         array('name' => 'Medium', 'value' => self::TPL_MEDIUM),
-                        array('name' => 'Large', 'value' => self::TPL_SMALL),
+                        array('name' => 'Small', 'value' => self::TPL_SMALL),
                     )
                 ),
                 array(
