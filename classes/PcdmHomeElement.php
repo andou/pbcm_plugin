@@ -38,7 +38,7 @@ class PcdmHomeElement {
     public function avoidTranslation($metas) {
         foreach ($this->do_not_translate as $key) {
             $key = array_search(self::TYPE_PREFIX . $key, $metas);
-            if ($key) {
+            if (!($key === FALSE)) {
                 unset($metas[$key]);
             }
         }
@@ -106,6 +106,12 @@ class PcdmHomeElement {
                     'id' => self::TYPE_PREFIX . 'void_after',
                     'type' => 'checkbox'
                 ),
+                array(
+                    'name' => 'Align Left',
+                    'desc' => 'Check if you want the image to be displayed on the right of this object',
+                    'id' => self::TYPE_PREFIX . 'align_left',
+                    'type' => 'checkbox'
+                ),
             )
         );
 
@@ -145,6 +151,25 @@ class PcdmHomeElement {
                     'desc' => 'User defined link',
                     'id' => self::TYPE_PREFIX . 'hp_link',
                     'type' => 'text_medium'
+                ),
+            ),
+        );
+
+        $meta_boxes[] = array(
+            'id' => self::TYPE_PREFIX . 'fieldset_4',
+            'title' => 'Link',
+            'pages' => array(self::TYPE_IDENTIFIER),
+            'context' => 'normal',
+            'priority' => 'low',
+            'show_names' => true,
+            'fields' => array(
+                array(
+                    'name' => 'Home Page Image',
+                    'desc' => 'Upload an image or enter an URL.',
+                    'id' => self::TYPE_PREFIX . 'home_image',
+                    'type' => 'file',
+                    'save_id' => false, // save ID using true
+                    'allow' => array('url', 'attachment') // limit to just attachments with array( 'attachment' )
                 ),
             ),
         );
