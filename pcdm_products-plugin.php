@@ -55,6 +55,19 @@ if (class_exists("PcdmHomeElement")) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////  NEWS  /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+if (!class_exists("PcdmNews")) {
+    include_once dirname(__FILE__) . '/classes/PcdmNews.php';
+}
+
+if (class_exists("PcdmNews")) {
+    new PcdmNews();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////  SEASON//  ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -106,7 +119,7 @@ function be_initialize_cmb_meta_boxes() {
 //numeric
 add_action( 'cmb_render_text_numericint', 'rrh_cmb_render_text_numericint', 10, 2 );
 function rrh_cmb_render_text_numericint( $field, $meta ) {
-    echo '<input type="text" name="', $field['id'], '" id="', $field['id'], '" value="', $meta ? $meta : $field['std'], '" style="width:97%" />','<p class="cmb_metabox_description">', $field['desc'], '</p>';
+    echo '<input type="text" name="', $field['id'], '" id="', $field['id'], '" value="', !(empty($meta)&&$meta!="0") ? $meta : $field['std'], '" style="width:97%" />','<p class="cmb_metabox_description">', $field['desc'], '</p>';
 }
 
 add_filter( 'cmb_validate_text_numericint', 'rrh_cmb_validate_text_numericint' );
