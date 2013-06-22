@@ -9,18 +9,29 @@ class PcdmHomeElement {
     const TPL_LARGE = 'hp_large';
     const TPL_MEDIUM = 'hp_medium';
     const TPL_SMALL = 'hp_small';
+    const LINK_TYPE_CUSTOM = 'custom';
+    const LINK_TYPE_PRODUCT = 'product';
+    const LINK_TYPE_SEASON = 'season';
     /**
      * Definisce il prefisso per i capi per questo tipo di dato
      */
     const TYPE_PREFIX = 'pcdm_hp_';
 
     protected $do_not_translate;
+    protected $link_types;
 
     public function __construct() {
         $this->do_not_translate = array(
             'description',
             'hp_link'
         );
+
+        $this->link_types = array(
+            array('name' => 'Custom', 'value' => self::LINK_TYPE_CUSTOM),
+            array('name' => 'Product', 'value' => self::LINK_TYPE_PRODUCT),
+            array('name' => 'Season', 'value' => self::LINK_TYPE_SEASON),
+        );
+
         add_action('init', array(&$this, 'defineType'));
         add_filter('cmb_meta_boxes', array(&$this, 'defineFields'));
         add_filter('pll_copy_post_metas', array(&$this, 'avoidTranslation'));
@@ -127,7 +138,7 @@ class PcdmHomeElement {
                     'name' => 'Number',
                     'desc' => 'Define the number of this element',
                     'id' => self::TYPE_PREFIX . 'hp_number',
-                    'type' => 'text_numericint'
+                    'type' => 'text_numericint',
                 ),
                 array(
                     'name' => 'Description',
@@ -151,6 +162,14 @@ class PcdmHomeElement {
                     'desc' => 'User defined link',
                     'id' => self::TYPE_PREFIX . 'hp_link',
                     'type' => 'text_medium'
+                ),
+                array(
+                    'name' => 'Link type',
+                    'desc' => 'Select the link type',
+                    'id' => self::TYPE_PREFIX . 'link_type',
+                    'type' => 'radio_inline',
+                    'options' => $this->link_types,
+                    'std'=>self::LINK_TYPE_CUSTOM
                 ),
             ),
         );
