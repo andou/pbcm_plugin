@@ -76,31 +76,10 @@ if (!class_exists("PcdmSeason")) {
     include_once dirname(__FILE__) . '/classes/PcdmSeason.php';
 }
 
-if (class_exists("PcdmProductBucket")) {
+if (class_exists("PcdmSeason")) {
     new PcdmSeason();
 }
 
-//function be_sample_metaboxes( $meta_boxes ) {
-//	$meta_boxes[] = array(
-//            'id' => PcdmProduct::TYPE_PREFIX .'fieldset_1',
-//            'title' => 'Appearance',
-//            'pages' => array(PcdmProduct::TYPE_IDENTIFIER),
-//            'context' => 'normal',
-//            'priority' => 'low',
-//            'show_names' => true,
-//            'fields' => array(
-//                array(
-//                    'name' => 'Color',
-//                    'desc' => 'Pick a color for the hover',
-//                    'id' => PcdmProduct::TYPE_PREFIX . 'collection_color',
-//                    'type' => 'colorpicker'
-//                ),
-//            ),
-//        );
-//
-//	return $meta_boxes;
-//}
-//add_filter( 'cmb_meta_boxes', 'be_sample_metaboxes' );
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////  OTHER  ///////////////////////////////////////////
@@ -115,18 +94,28 @@ function be_initialize_cmb_meta_boxes() {
 }
 
 /////////////////METABOX DEFINITION  ///////////////////////////////////////////
-
 //numeric
-add_action( 'cmb_render_text_numericint', 'rrh_cmb_render_text_numericint', 10, 2 );
-function rrh_cmb_render_text_numericint( $field, $meta ) {
-    echo '<input type="text" name="', $field['id'], '" id="', $field['id'], '" value="', !(empty($meta)&&$meta!="0") ? $meta : $field['std'], '" style="width:97%" />','<p class="cmb_metabox_description">', $field['desc'], '</p>';
+add_action('cmb_render_text_numericint', 'rrh_cmb_render_text_numericint', 10, 2);
+
+function rrh_cmb_render_text_numericint($field, $meta) {
+    if ($meta !== "0") {
+        $value = !(empty($meta)) ? $meta : $field['std'];
+    } else {
+        $value = $meta;
+    }
+
+    echo '<input type="text" name="', $field['id'], '" id="', $field['id'], '" value="', $value, '" style="width:97%" />', '<p class="cmb_metabox_description">', $field['desc'], '</p>';
 }
 
-add_filter( 'cmb_validate_text_numericint', 'rrh_cmb_validate_text_numericint' );
-function rrh_cmb_validate_text_numericint( $new ) {
+add_filter('cmb_validate_text_numericint', 'rrh_cmb_validate_text_numericint');
+
+function rrh_cmb_validate_text_numericint($new) {
+    $new = (int) $new;
+    if ($new === 0) {
+        return "0";
+    }
     return (int) $new;
 }
-
 
 //stili e js per la console di admin
 add_action('admin_menu', 'pcdm_scripts_admin_styles');

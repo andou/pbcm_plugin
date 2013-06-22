@@ -25,6 +25,9 @@ class PcdmProduct {
         add_filter(sprintf("manage_%s_posts_columns", self::TYPE_IDENTIFIER), array(&$this, 'changeColumns'));
         add_filter('pll_copy_post_metas', array(&$this, 'avoidTranslation'));
         add_action("manage_posts_custom_column", array(&$this, "fillColumns"), 10, 2);
+        //registro la callback ajax
+        add_action('wp_ajax_nopriv_product_details', array(&$this, 'productDetailsJsonAction'));
+        add_action('wp_ajax_product_details', array(&$this, 'productDetailsJsonAction'));
     }
 
     /**
@@ -141,10 +144,34 @@ class PcdmProduct {
             'show_names' => true,
             'fields' => array(
                 array(
+                    'name' => 'Number',
+                    'desc' => 'Define the number of this element',
+                    'id' => self::TYPE_PREFIX . 'number',
+                    'type' => 'text_numericint'
+                ),
+                array(
                     'name' => 'Color',
                     'desc' => 'Pick a color for the hover',
                     'id' => self::TYPE_PREFIX . 'collection_color',
                     'type' => 'colorpicker'
+                ),
+            ),
+        );
+        $meta_boxes[] = array(
+            'id' => self::TYPE_PREFIX . 'fieldset_3',
+            'title' => 'Images',
+            'pages' => array(self::TYPE_IDENTIFIER),
+            'context' => 'normal',
+            'priority' => 'low',
+            'show_names' => true,
+            'fields' => array(
+                array(
+                    'name' => 'Detail image',
+                    'desc' => 'Upload an image or enter an URL.',
+                    'id' => self::TYPE_PREFIX . 'detail_image',
+                    'type' => 'file',
+                    'save_id' => false, // save ID using true
+                    'allow' => array('url', 'attachment') // limit to just attachments with array( 'attachment' )
                 ),
             ),
         );
@@ -202,6 +229,43 @@ class PcdmProduct {
             delete_post_meta($postinfo->ID, PcdmProductBucket::TYPE_PREFIX . 'prod_c', $postid);
             delete_post_meta($postinfo->ID, PcdmProductBucket::TYPE_PREFIX . 'prod_d', $postid);
         }
+    }
+
+    /**
+     * Gestisce la callback ajax per la richiesta delle informazioni relative ad
+     * un prodotto a catalogo
+     * 
+     */
+    public function productDetailsJsonAction() {
+        $details = array(
+            'details' => array()
+        );
+        if (isset($_POST['product_id']) && is_numeric($_POST['product_id'])) {
+            $_pid = (int) $_POST['product_id'];
+            $product = get_post($_pid);
+            if ($product->ID) {
+                if ($product->post_type == self::TYPE_IDENTIFIER) {
+                    $meta = get_post_meta($_pid);
+
+
+                    $details['details']['img'] = $meta[self::TYPE_PREFIX . 'detail_image'][0];
+                    $details['details']['number'] = $meta[self::TYPE_PREFIX . 'number'][0];
+
+                    $seasons = wp_get_post_terms($_pid, PcdmSeason::CATEGORY_IDENTIFIER);
+                    if (count($seasons)) {
+                        $season = array_pop($seasons);
+                        $details['details']['collection'] = $season->name;
+                    }
+
+                    $details['details']['title'] = $product->post_title;
+                    $details['details']['description'] = $meta[self::TYPE_PREFIX . 'description'][0];
+                    $details['details']['social'] = array();
+                }
+            }
+        }
+
+        header("Content-type: application/json");
+        die(json_encode($details));
     }
 
 }
