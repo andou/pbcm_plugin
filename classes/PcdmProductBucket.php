@@ -13,6 +13,7 @@ class PcdmProductBucket {
     const TYPE_PREFIX = 'pcdm_pb_';
     const TPL_SINGLE = 'sngl_prod_tpl';
     const TPL_MULTIPLE = 'mult_prod_tpl';
+    const VOID_PRODUCT = -1;
 
     protected $do_not_translate;
 
@@ -89,7 +90,7 @@ class PcdmProductBucket {
     public function defineFields($meta_boxes) {
 
         $product_selector = array();
-        $product_selector[] = array('name' => 'Vuoto', 'value' => -1);
+        $product_selector[] = array('name' => 'Vuoto', 'value' => self::VOID_PRODUCT);
         $product_selector = array_merge($product_selector, PcdmProduct::getProductsForSelection());
 
         $meta_boxes[] = array(

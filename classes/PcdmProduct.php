@@ -173,6 +173,22 @@ class PcdmProduct {
                     'save_id' => false, // save ID using true
                     'allow' => array('url', 'attachment') // limit to just attachments with array( 'attachment' )
                 ),
+                array(
+                    'name' => 'Collection Big Image',
+                    'desc' => 'Upload an image or enter an URL.',
+                    'id' => self::TYPE_PREFIX . 'collection_image_big',
+                    'type' => 'file',
+                    'save_id' => false, // save ID using true
+                    'allow' => array('url', 'attachment') // limit to just attachments with array( 'attachment' )
+                ),
+                array(
+                    'name' => 'Collection Small Image',
+                    'desc' => 'Upload an image or enter an URL.',
+                    'id' => self::TYPE_PREFIX . 'collection_image_small',
+                    'type' => 'file',
+                    'save_id' => false, // save ID using true
+                    'allow' => array('url', 'attachment') // limit to just attachments with array( 'attachment' )
+                ),
             ),
         );
 
