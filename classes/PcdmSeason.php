@@ -23,7 +23,7 @@ class PcdmSeason {
             'singular_name' => _x('Season', 'taxonomy singular name'),
             'search_items' => __('Search a Season'),
             'all_items' => __('All Seasons'),
-            'edit_item' => __('Edit Job Type'),
+            'edit_item' => __('Edit Season Info'),
             'update_item' => __('Update Season'),
             'add_new_item' => __('Add New Season'),
             'new_item_name' => __('New Season'),

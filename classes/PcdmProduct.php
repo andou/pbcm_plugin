@@ -155,6 +155,12 @@ class PcdmProduct {
                     'id' => self::TYPE_PREFIX . 'collection_color',
                     'type' => 'colorpicker'
                 ),
+                array(
+                    'name' => 'Text',
+                    'desc' => 'Check if you want the hover text to be white, otherwise it\'ll be dark',
+                    'id' => self::TYPE_PREFIX . 'text_color',
+                    'type' => 'checkbox'
+                ),
             ),
         );
         $meta_boxes[] = array(
