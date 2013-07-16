@@ -125,3 +125,5 @@ function pcdm_scripts_admin_styles() {
     wp_enqueue_style('pcdm-admin-css', plugin_dir_url(__FILE__) . 'skin/css/pcdm-admin.css');
     wp_enqueue_script('pcdm-admin-script', plugin_dir_url(__FILE__) . 'skin/js/pcdm-admin.js', array('jquery'));
 }
+
+add_filter( 'got_rewrite', '__return_true', 999 );
