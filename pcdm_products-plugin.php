@@ -68,6 +68,58 @@ if (class_exists("PcdmNews")) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////  PRESS  ////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+if (!class_exists("PcdmPress")) {
+    include_once dirname(__FILE__) . '/classes/PcdmPress.php';
+}
+
+if (class_exists("PcdmPress")) {
+    new PcdmPress();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////  PRESS CATEGORIES /////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+if (!class_exists("PcdmPressYear")) {
+    include_once dirname(__FILE__) . '/classes/PcdmPressYear.php';
+}
+
+if (class_exists("PcdmPressYear")) {
+    new PcdmPressYear();
+}
+
+
+if (!class_exists("PcdmPressNewspaper")) {
+    include_once dirname(__FILE__) . '/classes/PcdmPressNewspaper.php';
+}
+
+if (class_exists("PcdmPressNewspaper")) {
+    new PcdmPressNewspaper();
+}
+
+
+if (!class_exists("PcdmPressNation")) {
+    include_once dirname(__FILE__) . '/classes/PcdmPressNation.php';
+}
+
+if (class_exists("PcdmPressNation")) {
+    new PcdmPressNation();
+}
+
+if (!class_exists("PcdmPressType")) {
+    include_once dirname(__FILE__) . '/classes/PcdmPressType.php';
+}
+
+if (class_exists("PcdmPressType")) {
+    new PcdmPressType();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////  SEASON//  ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
