@@ -9,9 +9,9 @@
 
 //Catch anyone trying to directly acess the plugin - which isn't allowed
 if (!function_exists('add_action')) {
-    header('Status: 403 Forbidden');
-    header('HTTP/1.1 403 Forbidden');
-    exit();
+  header('Status: 403 Forbidden');
+  header('HTTP/1.1 403 Forbidden');
+  exit();
 }
 
 
@@ -20,11 +20,11 @@ if (!function_exists('add_action')) {
 ////////////////////////////////////////////////////////////////////////////////
 //Check if PcdmProduct alredy exists
 if (!class_exists("PcdmProduct")) {
-    include_once dirname(__FILE__) . '/classes/PcdmProduct.php';
+  include_once dirname(__FILE__) . '/classes/PcdmProduct.php';
 }
 
 if (class_exists("PcdmProduct")) {
-    new PcdmProduct();
+  new PcdmProduct();
 }
 
 
@@ -34,11 +34,11 @@ if (class_exists("PcdmProduct")) {
 
 
 if (!class_exists("PcdmProductBucket")) {
-    include_once dirname(__FILE__) . '/classes/PcdmProductBucket.php';
+  include_once dirname(__FILE__) . '/classes/PcdmProductBucket.php';
 }
 
 if (class_exists("PcdmProductBucket")) {
-    new PcdmProductBucket();
+  new PcdmProductBucket();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,11 +47,11 @@ if (class_exists("PcdmProductBucket")) {
 
 
 if (!class_exists("PcdmHomeElement")) {
-    include_once dirname(__FILE__) . '/classes/PcdmHomeElement.php';
+  include_once dirname(__FILE__) . '/classes/PcdmHomeElement.php';
 }
 
 if (class_exists("PcdmHomeElement")) {
-    new PcdmHomeElement();
+  new PcdmHomeElement();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,11 +60,11 @@ if (class_exists("PcdmHomeElement")) {
 
 
 if (!class_exists("PcdmNews")) {
-    include_once dirname(__FILE__) . '/classes/PcdmNews.php';
+  include_once dirname(__FILE__) . '/classes/PcdmNews.php';
 }
 
 if (class_exists("PcdmNews")) {
-    new PcdmNews();
+  new PcdmNews();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,11 +73,11 @@ if (class_exists("PcdmNews")) {
 
 
 if (!class_exists("PcdmPress")) {
-    include_once dirname(__FILE__) . '/classes/PcdmPress.php';
+  include_once dirname(__FILE__) . '/classes/PcdmPress.php';
 }
 
 if (class_exists("PcdmPress")) {
-    new PcdmPress();
+  new PcdmPress();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,37 +86,37 @@ if (class_exists("PcdmPress")) {
 
 
 if (!class_exists("PcdmPressYear")) {
-    include_once dirname(__FILE__) . '/classes/PcdmPressYear.php';
+  include_once dirname(__FILE__) . '/classes/PcdmPressYear.php';
 }
 
 if (class_exists("PcdmPressYear")) {
-    new PcdmPressYear();
+  new PcdmPressYear();
 }
 
 
 if (!class_exists("PcdmPressNewspaper")) {
-    include_once dirname(__FILE__) . '/classes/PcdmPressNewspaper.php';
+  include_once dirname(__FILE__) . '/classes/PcdmPressNewspaper.php';
 }
 
 if (class_exists("PcdmPressNewspaper")) {
-    new PcdmPressNewspaper();
+  new PcdmPressNewspaper();
 }
 
 
 if (!class_exists("PcdmPressNation")) {
-    include_once dirname(__FILE__) . '/classes/PcdmPressNation.php';
+  include_once dirname(__FILE__) . '/classes/PcdmPressNation.php';
 }
 
 if (class_exists("PcdmPressNation")) {
-    new PcdmPressNation();
+  new PcdmPressNation();
 }
 
 if (!class_exists("PcdmPressType")) {
-    include_once dirname(__FILE__) . '/classes/PcdmPressType.php';
+  include_once dirname(__FILE__) . '/classes/PcdmPressType.php';
 }
 
 if (class_exists("PcdmPressType")) {
-    new PcdmPressType();
+  new PcdmPressType();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -125,11 +125,11 @@ if (class_exists("PcdmPressType")) {
 
 
 if (!class_exists("PcdmSeason")) {
-    include_once dirname(__FILE__) . '/classes/PcdmSeason.php';
+  include_once dirname(__FILE__) . '/classes/PcdmSeason.php';
 }
 
 if (class_exists("PcdmSeason")) {
-    new PcdmSeason();
+  new PcdmSeason();
 }
 
 
@@ -140,9 +140,9 @@ if (class_exists("PcdmSeason")) {
 add_action('init', 'be_initialize_cmb_meta_boxes', 9999);
 
 function be_initialize_cmb_meta_boxes() {
-    if (!class_exists('cmb_Meta_Box')) {
-        require_once( 'lib/metabox/init.php' );
-    }
+  if (!class_exists('cmb_Meta_Box')) {
+    require_once( 'lib/metabox/init.php' );
+  }
 }
 
 /////////////////METABOX DEFINITION  ///////////////////////////////////////////
@@ -150,32 +150,65 @@ function be_initialize_cmb_meta_boxes() {
 add_action('cmb_render_text_numericint', 'rrh_cmb_render_text_numericint', 10, 2);
 
 function rrh_cmb_render_text_numericint($field, $meta) {
-    if ($meta !== "0") {
-        $value = !(empty($meta)) ? $meta : $field['std'];
-    } else {
-        $value = $meta;
-    }
+  if ($meta !== "0") {
+    $value = !(empty($meta)) ? $meta : $field['std'];
+  } else {
+    $value = $meta;
+  }
 
-    echo '<input type="text" name="', $field['id'], '" id="', $field['id'], '" value="', $value, '" style="width:97%" />', '<p class="cmb_metabox_description">', $field['desc'], '</p>';
+  echo '<input type="text" name="', $field['id'], '" id="', $field['id'], '" value="', $value, '" style="width:97%" />', '<p class="cmb_metabox_description">', $field['desc'], '</p>';
 }
 
 add_filter('cmb_validate_text_numericint', 'rrh_cmb_validate_text_numericint');
 
 function rrh_cmb_validate_text_numericint($new) {
-    $new = (int) $new;
-    if ($new === 0) {
-        return "0";
-    }
-    return (int) $new;
+  $new = (int) $new;
+  if ($new === 0) {
+    return "0";
+  }
+  return (int) $new;
 }
 
 //stili e js per la console di admin
 add_action('admin_menu', 'pcdm_scripts_admin_styles');
 
 function pcdm_scripts_admin_styles() {
-    wp_enqueue_script('jquery-ui-core');
-    wp_enqueue_style('pcdm-admin-css', plugin_dir_url(__FILE__) . 'skin/css/pcdm-admin.css');
-    wp_enqueue_script('pcdm-admin-script', plugin_dir_url(__FILE__) . 'skin/js/pcdm-admin.js', array('jquery'));
+  wp_enqueue_script('jquery-ui-core');
+  wp_enqueue_style('pcdm-admin-css', plugin_dir_url(__FILE__) . 'skin/css/pcdm-admin.css');
+  wp_enqueue_script('pcdm-admin-script', plugin_dir_url(__FILE__) . 'skin/js/pcdm-admin.js', array('jquery'));
 }
 
-add_filter( 'got_rewrite', '__return_true', 999 );
+add_filter('got_rewrite', '__return_true', 999);
+
+
+//callback registrazione newsletter
+
+add_action('wp_ajax_nopriv_registernl', 'registerNewsletter');
+add_action('wp_ajax_registernl', 'registerNewsletter');
+
+function registerNewsletter() {
+
+  $res = array();
+  $success = 1;
+  $res['error'] = array();
+
+  if (!isset($_POST['name'])) {
+    $success = 0;
+    $res['error'][] = 'name';
+  }
+
+  if (!isset($_POST['surname'])) {
+    $success = 0;
+    $res['error'][] = 'surname';
+  }
+
+  if (!isset($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    $success = 0;
+    $res['error'][] = 'email';
+  }
+
+  $res['success'] = $success;
+
+  header("Content-type: application/json");
+  die(json_encode($res));
+}
