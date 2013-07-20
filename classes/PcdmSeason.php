@@ -35,9 +35,11 @@ class PcdmSeason {
         );
         
         $args = array(
-            "hierarchical" => true,
+        "hierarchical" => TRUE,
             "labels" => $labels,
             'sort' => true,
+        'show_ui' => TRUE,
+        'query_var' => true,
             'rewrite' => array('slug' => 'seasons'),
         );
         register_taxonomy(self::CATEGORY_IDENTIFIER, $types, $args);

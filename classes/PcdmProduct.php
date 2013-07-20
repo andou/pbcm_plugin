@@ -28,7 +28,38 @@ class PcdmProduct {
         //registro la callback ajax
         add_action('wp_ajax_nopriv_product_details', array(&$this, 'productDetailsJsonAction'));
         add_action('wp_ajax_product_details', array(&$this, 'productDetailsJsonAction'));
+           
+        add_filter('post_type_link', array(&$this, 'customPermalink'), 10, 3);
+        
     }
+    
+    
+    
+  public function customPermalink($permalink, $post_id, $leavename) {
+    if (strpos($permalink, '%prod_season%') === FALSE)
+      return $permalink;
+    
+    if (strpos($permalink, '%prod_id%') === FALSE)
+      return $permalink;
+
+    // Get post
+    $post = get_post($post_id);
+    if (!$post)
+      return $permalink;
+
+    // Get taxonomy terms
+    $terms = wp_get_object_terms($post->ID, PcdmSeason::CATEGORY_IDENTIFIER);
+    if (!is_wp_error($terms) && !empty($terms) && is_object($terms[0]))
+      $taxonomy_slug = $terms[0]->slug;
+    else
+      $taxonomy_slug = 'no-season';
+
+    $permalink = str_replace('%prod_season%', $taxonomy_slug, $permalink); 
+    
+    $permalink = str_replace('%prod_id%', $post->ID, $permalink);
+    
+    return $permalink;
+  }
 
     /**
      * Per evitare la sincronizzazione di alcuni campi
@@ -71,7 +102,7 @@ class PcdmProduct {
             'publicly_queryable' => true,
             'show_ui' => true,
             'query_var' => true,
-            'rewrite' => array('slug' => 'products'),
+            'rewrite' => false,//array('slug' => 'products'),
             'capability_type' => 'post',
             'hierarchical' => false, //non presenta gerarchia
             'menu_position' => null,
@@ -79,6 +110,17 @@ class PcdmProduct {
         );
 
         register_post_type(self::TYPE_IDENTIFIER, $args);
+        
+        global $wp_rewrite;
+        $product_structure = 'seasons/%prod_season%/%prod_id%/';
+        $rewrite_args = array(
+          'with_front'=>false,  
+        );
+        $wp_rewrite->add_rewrite_tag("%prod_id%", '([^/]+)', "post_type=pcdm_products&p=");
+        $wp_rewrite->add_rewrite_tag("%prod_season%", '([^/]+)', "category_name=");
+        
+        $wp_rewrite->add_permastruct('pcdm_products', $product_structure,$rewrite_args);
+//        $wp_rewrite->flush_rules();
     }
 
     /**
