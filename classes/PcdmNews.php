@@ -151,8 +151,8 @@ class PcdmNews {
                     'desc' => 'Upload an image or enter an URL.',
                     'id' => self::TYPE_PREFIX . 'wall_image',
                     'type' => 'file',
-                    'save_id' => false, // save ID using true
-                    'allow' => array('url', 'attachment') // limit to just attachments with array( 'attachment' )
+                    'save_id' => true, // save ID using true
+                    'allow' => array('attachment') // limit to just attachments with array( 'attachment' )
                 ),array(
                     'name' => 'Detail image',
                     'desc' => 'Upload an image or enter an URL.',
