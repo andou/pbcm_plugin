@@ -18,6 +18,8 @@ class PcdmPress {
     //registro la callback ajax
     add_action('wp_ajax_nopriv_press', array(&$this, 'pressDetailJsonAction'));
     add_action('wp_ajax_press', array(&$this, 'pressDetailJsonAction'));
+    
+    add_image_size( 'pcdm_press_wall_image', 221, 296, FALSE );
   }
 
   public function pressDetailJsonAction() {
@@ -157,8 +159,8 @@ class PcdmPress {
                 'desc' => 'Upload an image or enter an URL.',
                 'id' => self::TYPE_PREFIX . 'wall_image',
                 'type' => 'file',
-                'save_id' => false, // save ID using true
-                'allow' => array('url', 'attachment') // limit to just attachments with array( 'attachment' )
+                'save_id' => true, // save ID using true
+                'allow' => array('attachment') // limit to just attachments with array( 'attachment' )
             ),
         ),
     );
