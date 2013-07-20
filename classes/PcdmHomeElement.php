@@ -38,6 +38,10 @@ class PcdmHomeElement {
         //definizione dei nuovi parametri in griglia
         add_filter(sprintf("manage_%s_posts_columns", self::TYPE_IDENTIFIER), array(&$this, 'changeColumns'));
         add_action("manage_posts_custom_column", array(&$this, "fillColumns"), 10, 2);
+        
+        add_image_size( 'pcdm_hp_home_image_big', 925, 672, FALSE );
+        add_image_size( 'pcdm_hp_home_image_medium', 610, 610, FALSE );
+        add_image_size( 'pcdm_hp_home_image_small', 305, 305, FALSE );
     }
 
     /**
@@ -187,8 +191,8 @@ class PcdmHomeElement {
                     'desc' => 'Upload an image or enter an URL.',
                     'id' => self::TYPE_PREFIX . 'home_image',
                     'type' => 'file',
-                    'save_id' => false, // save ID using true
-                    'allow' => array('url', 'attachment') // limit to just attachments with array( 'attachment' )
+                    'save_id' => true, // save ID using true
+                    'allow' => array('attachment') // limit to just attachments with array( 'attachment' )
                 ),
             ),
         );
