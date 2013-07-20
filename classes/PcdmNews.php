@@ -8,6 +8,7 @@ class PcdmNews {
     const TYPE_IDENTIFIER = 'pcdm_news';
     const TPL_LARGE = 'news_big';
     const TPL_SMALL = 'news_small';
+    
     /**
      * Definisce il prefisso per i capi per questo tipo di dato
      */
@@ -22,6 +23,11 @@ class PcdmNews {
         add_action('init', array(&$this, 'defineType'));
         add_filter('cmb_meta_boxes', array(&$this, 'defineFields'));
         add_filter('pll_copy_post_metas', array(&$this, 'avoidTranslation'));
+        //aggiunta delle dimensioni delle varie immagini
+        add_image_size( 'pcdm_news_wall_image_big', 610, 676, FALSE );
+        add_image_size( 'pcdm_news_wall_image_small', 293, 325, FALSE );
+        add_image_size( 'pcdm_news_detail_image', 923, 761, FALSE );
+        
     }
 
     /**
@@ -158,8 +164,8 @@ class PcdmNews {
                     'desc' => 'Upload an image or enter an URL.',
                     'id' => self::TYPE_PREFIX . 'detail_image',
                     'type' => 'file',
-                    'save_id' => false, // save ID using true
-                    'allow' => array('url', 'attachment') // limit to just attachments with array( 'attachment' )
+                    'save_id' => true, // save ID using true
+                    'allow' => array('attachment') // limit to just attachments with array( 'attachment' )
                 ),
             ),
         );
